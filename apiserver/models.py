@@ -12,3 +12,6 @@ class Imgdata(models.Model):
     color=models.IntegerField(null=True, blank=False)
     detail=models.CharField(null=True, max_length=50)
     image=models.ImageField(blank=True, upload_to="", null=True)
+
+class Upload(models.Model):
+    image=models.FileField(blank=False, null=False)
