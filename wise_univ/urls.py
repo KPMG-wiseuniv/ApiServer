@@ -24,4 +24,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('send_imgdata/', views.send_imgdata, name='send_imgdata'),
     path('train_img/', views.train_img, name='train_img'),
+    path('send_train_result/', views.send_train_result, name='send_train_result'),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
