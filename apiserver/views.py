@@ -58,10 +58,11 @@ def send_train_result(request):
         print(Furniture)
         print(FD)
         if Furniture=='Chair':
-            model=mobilenet_v3_small(num_classes=[2, 5, 3, 4])
+            model=mobilenet_v3_small(num_classes=[2, 6, 3, 4])
+            model.load_state_dict(torch.load(os.path.join(os.path.dirname(os.path.dirname(__file__)),'media/200_chair.pth')))
         elif Furniture=='Table':
-            model=mobilenet_v3_small(num_classes=[2, 5, 3, 4])
-        model.load_state_dict(torch.load(os.path.join(os.path.dirname(os.path.dirname(__file__)),'media/model.pth')))
+            model=mobilenet_v3_small(num_classes=[2, 6, 3, 3])
+            model.load_state_dict(torch.load(os.path.join(os.path.dirname(os.path.dirname(__file__)),'media/200_table.pth')))
         if model is None:
             print('model load failed')
             os.remove(os.path.join(os.path.dirname(os.path.dirname(__file__)),imgname))
@@ -70,7 +71,15 @@ def send_train_result(request):
             model.eval()
             output=model(img_t)
             interior=np.argmax(output[0].detach().numpy(), axis = 1)
-            color=np.argmax(output[1].detach().numpy(), axis = 1)
+            color=output[1].detach().numpy()
+            if int(interior[0])==0:
+                color[0][3]=0
+                color[0][4]=0
+                color[0][5]=0
+            elif int(interior[0])==1:
+                color[0][0]=0
+                color[0][2]=0
+            color=np.argmax(color, axis = 1)
             output_design=output[2].detach().numpy()
             output_function=output[3].detach().numpy()
             output_design[0][0]=0
