@@ -25,12 +25,17 @@ def send_imgdata(request):
 def train_img(request):
     if request.method=='POST':
         img_serializer=UploadSerializer(data=request.FILES)
+        global imgname
         global Furniture
         global FD
+        imgname=request.POST['imgname']
+        imgname=imgname.replace('"', '')
+        imgname='media/'+imgname
         Furniture=request.POST['Furniture']
         FD=request.POST['FD']
         Furniture=Furniture.replace('"', '')
         FD=FD.replace('"', '')
+        print(imgname)
         print(Furniture)
         print(FD)
         if img_serializer.is_valid():
@@ -39,7 +44,7 @@ def train_img(request):
 
 @csrf_exempt
 def send_train_result(request):
-    img=os.path.join(os.path.dirname(os.path.dirname(__file__)),'media/train.jpg')
+    img=os.path.join(os.path.dirname(os.path.dirname(__file__)),imgname)
     #img=cv2.imread(img)
     img=Image.open(img)
     print(np.array(img).shape)
@@ -59,7 +64,7 @@ def send_train_result(request):
         model.load_state_dict(torch.load(os.path.join(os.path.dirname(os.path.dirname(__file__)),'media/model.pth')))
         if model is None:
             print('model load failed')
-            os.remove(os.path.join(os.path.dirname(os.path.dirname(__file__)),'media/train.jpg'))
+            os.remove(os.path.join(os.path.dirname(os.path.dirname(__file__)),imgname))
             return HttpResponse()
         else:
             model.eval()
@@ -85,15 +90,15 @@ def send_train_result(request):
                 result["interior"]=int(interior)
                 result["color"]=int(color)
                 result["FD"]=int(FR_design)
-                os.remove(os.path.join(os.path.dirname(os.path.dirname(__file__)),'media/train.jpg'))
+                os.remove(os.path.join(os.path.dirname(os.path.dirname(__file__)),imgname))
                 return JsonResponse(result)
             elif FD=='Function':
                 result=OrderedDict()
                 result["interior"]=int(interior)
                 result["color"]=int(color)
                 result["FD"]=int(FR_function)
-                os.remove(os.path.join(os.path.dirname(os.path.dirname(__file__)),'media/train.jpg'))
+                os.remove(os.path.join(os.path.dirname(os.path.dirname(__file__)),imgname))
                 return JsonResponse(result)
-    os.remove(os.path.join(os.path.dirname(os.path.dirname(__file__)),'media/train.jpg'))
+    os.remove(os.path.join(os.path.dirname(os.path.dirname(__file__)),imgname))
     return HttpResponse()
 
