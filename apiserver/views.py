@@ -45,8 +45,11 @@ def train_img(request):
 @csrf_exempt
 def send_train_result(request):
     img=os.path.join(os.path.dirname(os.path.dirname(__file__)),imgname)
+    #img=os.path.join(os.path.dirname(os.path.dirname(__file__)),'media/sam.PNG')
     #img=cv2.imread(img)
     img=Image.open(img)
+    print(np.array(img).shape)
+    img=img.convert('RGB')
     print(np.array(img).shape)
     img=np.expand_dims(np.transpose(img, (2, 0, 1)), 0)
     img_t=torch.as_tensor(img, dtype=torch.float)
