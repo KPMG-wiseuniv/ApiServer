@@ -68,7 +68,6 @@ def send_train_result(request):
             model.load_state_dict(torch.load(os.path.join(os.path.dirname(os.path.dirname(__file__)),'media/200_table.pth')))
         if model is None:
             print('model load failed')
-            os.remove(os.path.join(os.path.dirname(os.path.dirname(__file__)),imgname))
             return HttpResponse()
         else:
             model.eval()
@@ -102,15 +101,12 @@ def send_train_result(request):
                 result["interior"]=int(interior)
                 result["color"]=int(color)
                 result["FD"]=int(FR_design)
-                os.remove(os.path.join(os.path.dirname(os.path.dirname(__file__)),imgname))
                 return JsonResponse(result)
             elif FD=='Function':
                 result=OrderedDict()
                 result["interior"]=int(interior)
                 result["color"]=int(color)
                 result["FD"]=int(FR_function)
-                os.remove(os.path.join(os.path.dirname(os.path.dirname(__file__)),imgname))
                 return JsonResponse(result)
-    os.remove(os.path.join(os.path.dirname(os.path.dirname(__file__)),imgname))
     return HttpResponse()
 
